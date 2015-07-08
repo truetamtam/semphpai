@@ -2,26 +2,54 @@ FROM debian:jessie
 
 ENV DEBIAN_FRONTEND noninteractive
 
-# Install nginx
-# php-fpm
-# mysql
-# supervisor
-RUN apt-get update -y
-RUN apt-get install -y nginx php5-fpm php5-mysqlnd php5-cli mysql-server supervisor
+# Install core dependencies
+RUN apt-get update && \
+    apt-get install -y \
+        curl \
+        wget \
+        apt-utils \
+        dialog \
+        vim-tiny \
+        git-core \
+        supervisor
 
-# php-fpm configuration
-RUN sed -e 's/;daemonize = yes/daemonize = no/' -i /etc/php5/fpm/php-fpm.conf
-RUN sed -e 's/;listen\.owner/listen.owner/' -i /etc/php5/fpm/pool.d/www.conf
-RUN sed -e 's/;listen\.group/listen.group/' -i /etc/php5/fpm/pool.d/www.conf
-RUN echo "\ndaemon off;" >> /etc/nginx/nginx.conf
 
-# nginx conf 2container
-ADD vhost.conf /etc/nginx/sites-available/default
-# supervisor conf 2container
-ADD supervisor.conf /etc/supervisor/conf.d/supervisor.conf
-# init.sh 2container
-ADD init.sh /init.sh
-RUN chmod 755 /init.sh
+# Install Nginx
+RUN apt-get install -y nginx
+
+# Add user 'www-data' to administrators
+RUN usermod -u 1000 www-data
+
+# Install php-fpm
+# mysql server
+RUN apt-get update && \
+    apt-get install -y \
+        php5-fpm \
+        php5-cli \
+        php5-curl \
+        php5-gd \
+        php5-intl \
+        php5-mcrypt \
+        php5-pgsql \
+        php5-sqlite \
+        php5-mysqlnd \
+        mysql-server
+
+# Moving configs to container
+# nginx servers config
+ADD vhost.conf /etc/nginx/sites-enabled/default
+# Supervisor config
+ADD supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+# php-fpm config
+ADD www.conf /etc/php5/fpm/pool.d/www.conf
+
+# Install composer
+RUN curl -sS https://getcomposer.org/installer | php && \
+    mv composer.phar /usr/local/bin/composer
+
+# Add running sh on start
+ADD run.sh /run.sh
+RUN chmod 755 /*.sh
 
 EXPOSE 80
 
@@ -29,5 +57,4 @@ EXPOSE 80
 VOLUME ["/app"]
 WORKDIR /app
 
-# Launching supervisor daemon
-CMD ["/usr/bin/supervisord"]
+CMD ["/run.sh"]
