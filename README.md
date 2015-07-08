@@ -8,5 +8,5 @@ Simple docker php environment. [debian,php-fpm,nginx,mysql]
         -v $PWD:/srv \  
         -e DB_NAME=somedbname \  
         -e INIT=bin/reload \  
-        ubermuda/symfony
+        proj/some
 ```
