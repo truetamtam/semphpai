@@ -21,6 +21,7 @@ ADD vhost.conf /etc/nginx/sites-available/default
 ADD supervisor.conf /etc/supervisor/conf.d/supervisor.conf
 # init.sh 2container
 ADD init.sh /init.sh
+RUN chmod 755 /init.sh
 
 EXPOSE 80
 
