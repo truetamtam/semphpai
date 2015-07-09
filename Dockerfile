@@ -53,6 +53,10 @@ RUN chmod 755 /*.sh
 
 EXPOSE 80
 
+# Create app folder
+RUN mkdir app
+RUN chown www-data:www-data /app
+
 # Mount folder
 VOLUME ["/app"]
 WORKDIR /app

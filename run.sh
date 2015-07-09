@@ -1,4 +1,7 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
-chown www-data:www-data /app
+# creating mysql db
+DB_NAME=${DB_NAME:-some}
+mysqladmin -uroot create DB_NAME
+
 supervisord
