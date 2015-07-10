@@ -11,7 +11,7 @@ cd app
 
 $ docker run -itd \  
     -p 8000:80 \  
-    -v $PWD:/srv \  
+    -v $PWD:/app \  
     -e DB_NAME=somedbname \  
     semphpai  
 ```
