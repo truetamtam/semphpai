@@ -9,7 +9,7 @@ RUN apt-get update && \
         wget \
         apt-utils \
         dialog \
-        vim-tiny \
+        vim \
         git-core \
         supervisor
 
