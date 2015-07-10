@@ -15,7 +15,7 @@ RUN apt-get update && \
 
 
 # Install Nginx
-RUN apt-get install -y nginx
+RUN apt-get install -y nginx-full
 
 # Add user 'www-data' to administrators
 RUN usermod -u 1000 www-data
