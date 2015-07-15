@@ -33,6 +33,7 @@ RUN apt-get update && \
         php5-pgsql \
         php5-sqlite \
         php5-mysqlnd \
+        php5-xdebug \
         mysql-server
 
 # Moving configs to container
