@@ -1,5 +1,7 @@
 FROM debian:jessie
 
+MAINTAINER Roman Ulashev <truetamtam@yandex.ru>
+
 ENV DEBIAN_FRONTEND noninteractive
 
 # Install core dependencies
