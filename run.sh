@@ -21,4 +21,5 @@ done
 
 /usr/bin/mysqladmin -u root create ${DB_NAME}
 
-supervisord
+# Start supervisord and services
+/usr/bin/supervisord -n -c /etc/supervisord.conf
