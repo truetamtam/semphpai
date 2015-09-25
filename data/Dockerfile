@@ -7,7 +7,7 @@ MAINTAINER Roman Ulashev <truetamtam@yandex.ru>
 # /var/lib/mysql - db data
 # /var/log/mysql - logs
 #
-RUN mkdir -p /etc/mysql && \
+RUN mkdir /etc/mysql && \
     mkdir -p /var/lib/mysql && \
     mkdir -p /var/log/mysql && \
 
