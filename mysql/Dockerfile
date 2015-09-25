@@ -1,6 +1,10 @@
-# From official docker mysql
-FROM mysql:latest
+FROM mysql
 
-MAINTAINER truetamtam <truetamtam@yandex.ru>
+MAINTAINER Roman Ulashev <truetamtam@yandex.ru>
 
-EXPOSE 3306
+RUN chown -R 1000:1000 /etc/mysql && mv /etc/mysql /etc/mysql_dist
+
+ENTRYPOINT []
+
+CMD (test -f /etc/mysql/my.cnf || cp -a /etc/mysql_dist/* /etc/mysql/) && bash /entrypoint.sh mysqld
+

@@ -1,0 +1,21 @@
+# data volume container
+#medata:
+#  image: busybox
+#  build: data/
+#  volumes:
+#   - /media/sf_www:/var/www
+
+mysql:
+  image: mysql:latest
+  restart: always
+  expose:
+   - "3306"
+  ports:
+   - "3306:3306"
+#  volumes_from:
+#   - medata
+  environment:
+   MYSQL_DATABASE: some
+   MYSQL_USER: root
+   MYSQL_PASSWORD: some
+   MYSQL_ROOT_PASSWORD: toor

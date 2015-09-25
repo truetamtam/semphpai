@@ -11,6 +11,11 @@ RUN mkdir -p /etc/mysql && \
     mkdir -p /var/lib/mysql && \
     mkdir -p /var/log/mysql && \
 
+    # mysql folders permissions
+    #
+    chown 999:999 /var/lib/mysql && \
+    chmod 770 /var/lib/mysql && \
+    chown 999:999 /var/log/mysql && \
 
     mkdir /data && \
 
