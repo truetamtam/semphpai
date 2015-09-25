@@ -1,9 +1,9 @@
 # semphpai
-Simple docker php environment. [debian,php-fpm,nginx,mysql]
+[Docker] (https://docs.docker.com/installation/debian/) based php environment. [debian,php-fpm,nginx,mysql]
 ***
 
-* [install docker] (https://docs.docker.com/installation/debian/)
-* cd semphpai && docker build -t semphpai .
+## Setup
+* build - "cd semphpai && docker build -t semphpai"
 
 ## Usage
 
