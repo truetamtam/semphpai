@@ -1,20 +1,36 @@
 # data volume container
-medata:
+data:
   build: data/
-#  volumes:
-#   - /media/sf_www:/var/www
+  container_name: data
+  volumes:
+   - ./index.html:/var/www/html/index.html
 
+# mysql
 mysql:
   build: mysql/
+  container_name: mysql
   restart: always
   expose:
    - "3306"
   ports:
    - "3306:3306"
   volumes_from:
-   - medata
+   - data
   environment:
-   MYSQL_DATABASE: some
-   MYSQL_ROOT_PASSWORD: toor
-   MYSQL_USER: root
-   MYSQL_PASSWORD: some
+    MYSQL_DATABASE: some
+    MYSQL_ROOT_PASSWORD: toor
+    MYSQL_USER: root
+    MYSQL_PASSWORD: some
+
+# nginx
+nginx:
+  build: nginx/
+  container_name: nginx
+  volumes_from:
+   - data
+  environment:
+    sites:
+      - map: some.dev
+        to: /some/path
+      - map: another.dev
+        to: /another/path
