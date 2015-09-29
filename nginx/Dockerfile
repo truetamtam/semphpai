@@ -2,10 +2,14 @@ FROM nginx
 
 MAINTAINER Roman Ulashev "truetamtam@yandex.ru"
 
-COPY server.template /etc/nginx/sites-available/example.dev
+# nginx config distr
+RUN cp -r /etc/nginx/ /etc/nginx_dist
 
-#RUN ["sed", "-i", "-e" "'s/user nginx;/user www-data;/'", "/etc/nginx/nginx.conf"]
+COPY nginx.conf /etc/nginx/
+COPY restart.sh /
+#COPY example.dev.conf /etc/nginx/conf.d/
 
-RUN ln -s /etc/nginx/sites-enabled/ /etc/nginx/sites-available/
-
-CMD ["nginx", "-g", "daemon off;"]
+# no conf copying(data container related)
+CMD (test -f /etc/nginx/nginx.conf || cp -a /etc/nginx_dist/* /etc/nginx/) && \
+    /bin/bash restart.sh && \
+    nginx -g "daemon off;"

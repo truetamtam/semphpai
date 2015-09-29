@@ -3,7 +3,7 @@ data:
   build: data/
   container_name: data
   volumes:
-   - ./index.html:/var/www/html/index.html
+   - /home/t3/shared_dwww/semphpai/html:/usr/share/nginx/html/
 
 # mysql
 mysql:
@@ -26,6 +26,9 @@ mysql:
 nginx:
   build: nginx/
   container_name: nginx
+  restart: always
+  ports:
+   - "8000:80"
   volumes_from:
    - data
   environment:
