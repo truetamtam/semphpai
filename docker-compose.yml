@@ -32,8 +32,9 @@ nginx:
   volumes_from:
    - data
   environment:
+    # preferred to /usr/share/nginx/html
     sites:
-      - map: some.dev
-        to: /some/path
+      - map: example.dev
+        to: /usr/share/nginx/html/example.dev
       - map: another.dev
-        to: /another/path
+        to: /usr/share/nginx/html/another-dev

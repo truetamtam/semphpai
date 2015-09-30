@@ -1,54 +1,101 @@
 #!/usr/bin/env bash
 
-block="server {
-    listen 80;
-    server_name $1;
-    root $2;
-    index index.html index.htm index.php;
-    charset utf-8;
-    location / {
-        try_files \$uri \$uri/ /index.php?\$query_string;
-    }
-    location = /favicon.ico { access_log off; log_not_found off; }
-    location = /robots.txt  { access_log off; log_not_found off; }
-    access_log off;
-    error_log  /var/log/nginx/$1-error.log error;
-    error_page 404 /index.php;
-    sendfile off;
-    location ~ \.php$ {
-        fastcgi_split_path_info ^(.+\.php)(/.+)$;
-        fastcgi_pass unix:/var/run/php5-fpm.sock;
-        fastcgi_index index.php;
-        # include fastcgi_params;
-        include fastcgi.conf;
-    }
-    location ~ /\.ht {
-        deny all;
-    }
-}
-"
+NGINX_CONF_DIR="/etc/nginx/conf.d"
 
-function genconf() {
+# for tests -del
+#NGINX_CONF_DIR="./tests"
+
+function setconfig() {
+
+    block="server {\n
+        \tlisten 80;\n
+        \tserver_name $1;\n
+        \troot $2;\n
+        \tindex index.html index.htm index.php;\n
+        \tcharset utf-8;\n\n
+
+        \tlocation / {\n
+            \t\ttry_files \$uri \$uri/ /index.php?\$query_string;\n
+        \t}\n
+        \tlocation = /favicon.ico { access_log off; log_not_found off; }\n
+        \tlocation = /robots.txt  { access_log off; log_not_found off; }\n\n
+
+        \taccess_log off;\n
+        \terror_log  /var/log/nginx/$1-error.log error;\n
+        \terror_page 404 /index.php;\n
+        \tsendfile off;\n\n
+
+        \tlocation ~ \.php$ {\n
+            \t\tfastcgi_split_path_info ^(.+\.php)(/.+)$;\n
+            \t\tfastcgi_pass unix:/var/run/php5-fpm.sock;\n
+            \t\tfastcgi_index index.php;\n
+            \t\t# include fastcgi_params;\n
+            \t\tinclude fastcgi.conf;\n
+        \t}\n\n
+
+        \tlocation ~ /\.ht {\n
+            \t\tdeny all;\n
+        \t}\n}"
+
+    tblock="server {\n
+        \tlisten 80;\n
+        \tserver_name $1;\n
+        \troot $2;\n
+        \tindex index.html index.htm index.php;\n
+        \tcharset utf-8;\n\n
+
+        \tlocation / {\n
+            \t\tindex index.html;\n
+        \t}\n
+        \tlocation = /favicon.ico { access_log off; log_not_found off; }\n
+        \tlocation = /robots.txt  { access_log off; log_not_found off; }\n\n
+
+        \taccess_log off;\n
+        \terror_log  /var/log/nginx/$1-error.log error;\n
+        \terror_page 404 /index.php;\n
+        \tsendfile off;\n\n
+
+        \tlocation ~ /\.ht {\n
+            \t\tdeny all;\n
+        \t}\n}"
+
+    # $1 - hostname
+    # $2 - map to folder
     echo "host: $1"
     echo "to: $2"
+    echo -e ${tblock} >> "${NGINX_CONF_DIR}/$1.conf"
 }
 
-SAMPLE='[{"map": "some.dev", "to": "/some/path"}, {"map": "another.dev", "to": "/another/path"}]'
+# for tests -del
+#sites="[{'map': 'example.dev', 'to': '/usr/share/nginx/html/example.dev'}, {'map': 'another.dev', 'to': '/usr/share/nginx/html/another-dev'}]"
 
-SITES=($(echo $SAMPLE | jq -r '.[] | .["map"] + "\n" + .["to"]'))
+SITES_TR=$(echo ${sites} | tr "'" "\"")
+SITES=($(echo ${SITES_TR} | jq -r '.[] | .["map"] + "\n" + .["to"]'))
 
-echo "=============="
-echo ${SITES[@]}
-echo "=============="
+#echo "=============="
+#echo ${SITES[@]}
+#echo "=============="
 
-SLICED=()
+#SLICED=()
 SITES_SIZE=${#SITES[@]}
+# del by 2 because of pairs map:to
 CNT_MAX=$(($SITES_SIZE/2))
 CNT=0
 
 for((n=0;n<=${CNT_MAX};n=$((n+2))));do
     TMP=("${SITES[@]:n:2}")
-    genconf ${TMP[0]} ${TMP[1]}
+    # no server directory? Creating.
+    if [[ ! -d "${TMP[1]}" ]]; then
+        echo "creating: ${TMP[1]}"
+        mkdir -p "${TMP[1]}"
+        chown www-data:www-data "${TMP[1]}"
+    fi
+    # Skipping if config already exists.
+    if [[ -e ${NGINX_CONF_DIR}/${TMP[0]}.conf ]]; then
+        echo "skipping ${TMP[0]}.conf, already exists"
+        continue
+    fi
+    setconfig ${TMP[0]} ${TMP[1]}
 done
 
 
