@@ -1,10 +1,12 @@
 #!/usr/bin/env bash
 
+# env2servers
 NGINX_CONF_DIR="/etc/nginx/conf.d"
 
 # for tests -del
 #NGINX_CONF_DIR="./tests"
 
+# example is in vhost.conf
 function setconfig() {
 
     block="server {\n
@@ -13,6 +15,9 @@ function setconfig() {
         \troot $2;\n
         \tindex index.html index.htm index.php;\n
         \tcharset utf-8;\n\n
+
+        \tclient_max_body_size 5m;
+        \tclient_body_timeout 180s;
 
         \tlocation / {\n
             \t\ttry_files \$uri \$uri/ /index.php?\$query_string;\n
@@ -27,33 +32,13 @@ function setconfig() {
 
         \tlocation ~ \.php$ {\n
             \t\tfastcgi_split_path_info ^(.+\.php)(/.+)$;\n
-            \t\tfastcgi_pass unix:/var/run/php5-fpm.sock;\n
+            \t\tfastcgi_pass php-fpm:9000;\n
             \t\tfastcgi_index index.php;\n
-            \t\t# include fastcgi_params;\n
-            \t\tinclude fastcgi.conf;\n
+            \t\tfastcgi_param SCRIPT_FILENAME \$document_root\$fastcgi_script_name;\n
+            \t\tfastcgi_param SCRIPT_NAME \$fastcgi_script_name;\n
+            \t\tinclude /etc/nginx/fastcgi_params;\n
+            \t\t # include fastcgi.conf;\n
         \t}\n\n
-
-        \tlocation ~ /\.ht {\n
-            \t\tdeny all;\n
-        \t}\n}"
-
-    tblock="server {\n
-        \tlisten 80;\n
-        \tserver_name $1;\n
-        \troot $2;\n
-        \tindex index.html index.htm index.php;\n
-        \tcharset utf-8;\n\n
-
-        \tlocation / {\n
-            \t\tindex index.html;\n
-        \t}\n
-        \tlocation = /favicon.ico { access_log off; log_not_found off; }\n
-        \tlocation = /robots.txt  { access_log off; log_not_found off; }\n\n
-
-        \taccess_log off;\n
-        \terror_log  /var/log/nginx/$1-error.log error;\n
-        \terror_page 404 /index.php;\n
-        \tsendfile off;\n\n
 
         \tlocation ~ /\.ht {\n
             \t\tdeny all;\n
@@ -63,7 +48,7 @@ function setconfig() {
     # $2 - map to folder
     echo "host: $1"
     echo "to: $2"
-    echo -e ${tblock} >> "${NGINX_CONF_DIR}/$1.conf"
+    echo -e ${block} >> "${NGINX_CONF_DIR}/$1.conf"
 }
 
 # for tests -del

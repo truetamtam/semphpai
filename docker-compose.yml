@@ -1,4 +1,5 @@
 # data volume container
+# mounting folders here
 data:
   build: data/
   container_name: data
@@ -13,7 +14,7 @@ mysql:
   expose:
    - "3306"
   ports:
-   - "3306:3306"
+   - "localhost:3306:3306"
   volumes_from:
    - data
   environment:
@@ -24,6 +25,8 @@ mysql:
 
 # nginx
 nginx:
+  links:
+    - php-fpm
   build: nginx/
   container_name: nginx
   restart: always
@@ -36,5 +39,14 @@ nginx:
     sites:
       - map: example.dev
         to: /usr/share/nginx/html/example.dev
-      - map: another.dev
-        to: /usr/share/nginx/html/another-dev
+
+
+# php-fpm
+php-fpm:
+  build: php-fpm/
+  container_name: php-fpm
+  restart: always
+  volumes_from:
+   - data
+  links:
+   - mysql
