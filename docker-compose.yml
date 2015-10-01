@@ -6,6 +6,7 @@ data:
   volumes:
    - /home/t3/shared_dwww/semphpai/html:/usr/share/nginx/html/
 
+
 # mysql
 mysql:
   build: mysql/
@@ -23,10 +24,23 @@ mysql:
     MYSQL_USER: root
     MYSQL_PASSWORD: some
 
+
+# php-fpm
+php:
+  privileged: true
+  links:
+   - mysql
+  ports:
+   - "9000"
+  build: php-fpm/
+  container_name: php
+  restart: always
+  volumes_from:
+   - data
+
+
 # nginx
 nginx:
-  links:
-    - php-fpm
   build: nginx/
   container_name: nginx
   restart: always
@@ -39,14 +53,5 @@ nginx:
     sites:
       - map: example.dev
         to: /usr/share/nginx/html/example.dev
-
-
-# php-fpm
-php-fpm:
-  build: php-fpm/
-  container_name: php-fpm
-  restart: always
-  volumes_from:
-   - data
   links:
-   - mysql
+    - php:php-fpm

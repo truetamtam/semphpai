@@ -41,7 +41,7 @@ function setconfig() {
             \t\tfastcgi_index index.php;\n
             \t\tfastcgi_param SCRIPT_FILENAME \$document_root\$fastcgi_script_name;\n
             \t\tfastcgi_param SCRIPT_NAME \$fastcgi_script_name;\n
-            \t\tinclude /etc/nginx/fastcgi_params;\n
+            \t\tinclude fastcgi_params;\n
             \t\t # include fastcgi.conf;\n
         \t}\n\n
 

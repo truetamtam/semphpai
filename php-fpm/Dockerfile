@@ -30,6 +30,8 @@ docker-php-ext-configure gd \
     --with-vpx-dir=/usr/lib/x86_64-linux-gnu/ && \
 # required php extensions
 #
+# xdebug
+#
 curl -L -o /tmp/xdebug.tar.gz http://xdebug.org/files/xdebug-2.3.3.tgz && \
 tar -xvf /tmp/xdebug.tar.gz -C /tmp && \
 rm -f /tmp/xdebug.tar.gz && \
@@ -48,6 +50,7 @@ docker-php-ext-install \
     mysqli \
     opcache \
     pdo_mysql \
+    mysql \
     shmop \
     sockets \
     sysvmsg \
@@ -55,4 +58,6 @@ docker-php-ext-install \
     sysvshm \
     zip
 
+# starting php-fpm
+#
 CMD ["php-fpm"]

@@ -1,4 +1,4 @@
-FROM busybox
+FROM debian:jessie
 
 MAINTAINER Roman Ulashev "truetamtam@yandex.ru"
 
