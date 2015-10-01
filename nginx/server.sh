@@ -1,6 +1,11 @@
 #!/usr/bin/env bash
 
 # env2servers
+# Description: generating nginx virtula host configs from docker environmet.
+# 1. Creating nginx formated configs in NGINX_CONF_DIR on startup.
+# 2. Created configs are not recreated on container restart.
+# 3. Delete cofig and restart to recreate them.
+#
 NGINX_CONF_DIR="/etc/nginx/conf.d"
 
 # for tests -del
@@ -51,15 +56,8 @@ function setconfig() {
     echo -e ${block} >> "${NGINX_CONF_DIR}/$1.conf"
 }
 
-# for tests -del
-#sites="[{'map': 'example.dev', 'to': '/usr/share/nginx/html/example.dev'}, {'map': 'another.dev', 'to': '/usr/share/nginx/html/another-dev'}]"
-
 SITES_TR=$(echo ${sites} | tr "'" "\"")
 SITES=($(echo ${SITES_TR} | jq -r '.[] | .["map"] + "\n" + .["to"]'))
-
-#echo "=============="
-#echo ${SITES[@]}
-#echo "=============="
 
 #SLICED=()
 SITES_SIZE=${#SITES[@]}
@@ -82,21 +80,3 @@ for((n=0;n<=${CNT_MAX};n=$((n+2))));do
     fi
     setconfig ${TMP[0]} ${TMP[1]}
 done
-
-
-
-#for site in ${SITES}; do
-#    $SLICED+=()
-#    if ( CNT -le ${CNT_MAX} ); then ${CNT}=0; fi
-#    ${CNT}++
-#    echo $site
-#done
-
-#while IFS=':' read -ra ADDR; do
-#    for s in "${ADDR[@]}"; do
-#        echo $s
-#    done
-#done <<< "$SITES"
-
-#echo "$block" > "/etc/nginx/conf.d/$1"
-#service nginx restart
