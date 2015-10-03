@@ -56,17 +56,17 @@ function setconfig() {
     echo -e ${block} >> "${NGINX_CONF_DIR}/$1.conf"
 }
 
-SITES_TR=$(echo ${sites} | tr "'" "\"")
-SITES=($(echo ${SITES_TR} | jq -r '.[] | .["map"] + "\n" + .["to"]'))
+SERVERS_TR=$(echo ${servers} | tr "'" "\"")
+SERVERS=($(echo ${SERVERS_TR} | jq -r '.[] | .["map"] + "\n" + .["to"]'))
 
 #SLICED=()
-SITES_SIZE=${#SITES[@]}
+SERVERS_SIZE=${#SERVERS[@]}
 # del by 2 because of pairs map:to
-CNT_MAX=$(($SITES_SIZE/2))
+CNT_MAX=$(($SERVERS_SIZE/2))
 CNT=0
 
 for((n=0;n<=${CNT_MAX};n=$((n+2))));do
-    TMP=("${SITES[@]:n:2}")
+    TMP=("${SERVERS[@]:n:2}")
     # no server directory? Creating.
     if [[ ! -d "${TMP[1]}" ]]; then
         echo "creating: ${TMP[1]}"

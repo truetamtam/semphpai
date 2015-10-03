@@ -21,7 +21,13 @@ RUN mkdir /etc/mysql && \
 
     # php-fpm folders
     #
+    mkdir -p /usr/local/etc && \
 
+    # www
+    #
+    mkdir -p /usr/share/nginx/html && \
+    chown -R www-data:www-data /usr/share/nginx/html && \
+    chmod -R +x /usr/share/nginx/html && \
 
     # data folders for mysql nginx php-fpm,
     # and symlinks to them in data container
@@ -31,15 +37,21 @@ RUN mkdir /etc/mysql && \
         # mysql data links
         #
         mkdir /data/mysql && \
-        ln -s /etc/mysql /data/mysql/config && \
+        ln -s /etc/mysql /data/mysql/conf && \
         ln -s /var/log/mysql /data/mysql/log && \
         ln -s /var/lib/mysql /data/mysql/dbdata && \
 
         # nginx data links
         #
         mkdir /data/nginx && \
-        ln -s /etc/nginx /data/nginx/config && \
-        ln -s /var/log/nginx /data/nginx/log
+        ln -s /etc/nginx /data/nginx/conf && \
+        ln -s /var/log/nginx /data/nginx/log && \
+
+        # php-fpm data links
+        #
+        mkdir /data/php-fpm && \
+        ln -s /usr/local/etc /data/php-fpm/conf
+
 
 # pointing all system related volumes
 #
@@ -47,5 +59,7 @@ VOLUME /data \
     /etc/mysql \
     /var/lib/mysql \
     /var/log/mysql \
+    /var/log/nginx \
     /etc/nginx \
-    /usr/share/nginx/html/
+    /usr/local/etc \
+    /usr/share/nginx/html

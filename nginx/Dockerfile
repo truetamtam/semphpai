@@ -1,4 +1,4 @@
-FROM nginx
+FROM nginx:1.9.5
 
 MAINTAINER Roman Ulashev "truetamtam@yandex.ru"
 

@@ -27,11 +27,8 @@ mysql:
 
 # php-fpm
 php:
-  privileged: true
   links:
    - mysql
-  ports:
-   - "9000"
   build: php-fpm/
   container_name: php
   restart: always
@@ -50,8 +47,10 @@ nginx:
    - data
   environment:
     # preferred to /usr/share/nginx/html
-    sites:
+    servers:
       - map: example.dev
         to: /usr/share/nginx/html/example.dev
+      - map: phpmyadmin.app
+        to: /usr/share/nginx/html/phpmyadmin
   links:
     - php:php-fpm
