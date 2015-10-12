@@ -15,8 +15,8 @@ mysql:
   restart: always
   expose:
    - "3306"
-  ports:
-   - "localhost:3306:3306"
+#  ports:
+#   - "localhost:3306:3306"
   volumes_from:
    - data
   environment:
@@ -62,7 +62,7 @@ nginx:
     servers:
       - map: example.dev
         to: /usr/share/nginx/html/example.dev
-      - map: phpmyadmin.app
+      - map: phpmyadmin.dev
         to: /usr/share/nginx/html/phpmyadmin
   links:
     - php:php-fpm

@@ -1,4 +1,4 @@
-FROM php:5.6.14-cli
+FROM php:cli
 
 MAINTAINER Roman Ulashev "truetamtam@yandex.ru"
 
