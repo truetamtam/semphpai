@@ -9,7 +9,8 @@ data:
 
 # mysql
 mysql:
-  build: mysql/
+#  build: mysql/
+  image: mariadb:latest
   container_name: mysql
   restart: always
   expose:
@@ -32,6 +33,12 @@ php:
   build: php-fpm/
   container_name: php
   restart: always
+  expose:
+   - "9000"
+  volumes:
+  # php.ini and xdebug.ini
+   - ./php-fpm/conf/php.ini:/usr/local/etc/php/php.ini
+   - ./php-fpm/conf/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
   volumes_from:
    - data
 
@@ -43,9 +50,14 @@ nginx:
   restart: always
   ports:
    - "8000:80"
+  volumes:
+  # nginx.conf
+   - /etc/nginx
+   - ./nginx/conf/nginx.conf:/etc/nginx/nginx.conf
   volumes_from:
    - data
   environment:
+    # php-fpm and nginx must have common volume
     # preferred to /usr/share/nginx/html
     servers:
       - map: example.dev

@@ -31,7 +31,7 @@ function setconfig() {
         \tlocation = /robots.txt  { access_log off; log_not_found off; }\n\n
 
         \taccess_log off;\n
-        \terror_log  /var/log/nginx/$1-error.log error;\n
+        \t#error_log  /var/log/nginx/$1-error.log error;\n
         \terror_page 404 /index.php;\n
         \tsendfile off;\n\n
 
@@ -40,9 +40,7 @@ function setconfig() {
             \t\tfastcgi_pass php-fpm:9000;\n
             \t\tfastcgi_index index.php;\n
             \t\tfastcgi_param SCRIPT_FILENAME \$document_root\$fastcgi_script_name;\n
-            \t\tfastcgi_param SCRIPT_NAME \$fastcgi_script_name;\n
             \t\tinclude fastcgi_params;\n
-            \t\t # include fastcgi.conf;\n
         \t}\n\n
 
         \tlocation ~ /\.ht {\n

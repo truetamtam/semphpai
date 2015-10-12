@@ -1,4 +1,4 @@
-FROM php:5.6-fpm
+FROM php:fpm
 
 MAINTAINER Roman Ulashev "truetamtam@yandex.ru"
 
@@ -84,9 +84,10 @@ docker-php-ext-install \
 
 # copying custom php.ini
 #
-COPY conf/php.ini /usr/local/etc_dist/php/
-COPY conf/xdebug.ini /usr/local/etc_dist/php/conf.d/
+#COPY conf/php.ini /usr/local/etc/php/php.ini
+#COPY conf/xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
 
 # starting php-fpm
 #
-CMD (test -f /usr/local/etc/php-fpm.conf || cp -a /usr/local/etc_dist/* /usr/local/etc/) && php-fpm
+#CMD (test -f /usr/local/etc/php-fpm.conf || cp -a /usr/local/etc_dist/* /usr/local/etc/) && php-fpm
+#CMD ["php-fpm"]
