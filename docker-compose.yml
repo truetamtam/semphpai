@@ -1,15 +1,12 @@
-# data volume container
-# mounting folders here
 data:
-  build: data/
+  build: ./data
   container_name: data
   volumes:
-   - /home/t3/shared_dwww/semphpai/html:/usr/share/nginx/html/
+   - /vagrant/html:/usr/share/nginx/html
+#   - /home/t3/shared_dwww/semphpai/html:/usr/share/nginx/html/
 
 
-# mysql
 mysql:
-#  build: mysql/
   image: mariadb:latest
   container_name: mysql
   restart: always
@@ -24,26 +21,24 @@ mysql:
     MYSQL_PASSWORD: some
 
 
-# php-fpm
 php:
-  links:
-   - mysql
-  build: php-fpm/
+  build: ./php-fpm
   container_name: php
   restart: always
   expose:
    - "9000"
   volumes:
   # php.ini and xdebug.ini
-   - ./php-fpm/conf/php.ini:/usr/local/etc/php/php.ini
-   - ./php-fpm/conf/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
+   - /vagrant/php-fpm/conf/php.ini:/usr/local/etc/php/php.ini
+   - /vagrant/php-fpm/conf/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
   volumes_from:
    - data
+  links:
+   - mysql
 
 
-# nginx
 nginx:
-  build: nginx/
+  build: ./nginx
   container_name: nginx
   restart: always
   ports:
@@ -51,7 +46,7 @@ nginx:
   volumes:
   # nginx.conf
    - /etc/nginx
-   - ./nginx/conf/nginx.conf:/etc/nginx/nginx.conf
+   - /vagrant/nginx/conf/nginx.conf:/etc/nginx/nginx.conf
   volumes_from:
    - data
   environment:
@@ -66,9 +61,9 @@ nginx:
     - php:php-fpm
 
 
-composer:
-  image: composer/composer:master
-  container_name: composer
-  working_dir: /usr/share/nginx/html/tcomposer
-  volumes_from:
-   - data
+#composer:
+#  image: composer/composer:master
+#  container_name: composer
+#  working_dir: /usr/share/nginx/html/tcomposer
+#  volumes_from:
+#   - data
