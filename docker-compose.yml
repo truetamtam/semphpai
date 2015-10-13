@@ -15,8 +15,6 @@ mysql:
   restart: always
   expose:
    - "3306"
-#  ports:
-#   - "localhost:3306:3306"
   volumes_from:
    - data
   environment:
@@ -57,7 +55,7 @@ nginx:
   volumes_from:
    - data
   environment:
-    # php-fpm and nginx must have common volume
+    # php-fpm and nginx must have common volume(docker specific)
     # preferred to /usr/share/nginx/html
     servers:
       - map: example.dev
@@ -66,3 +64,11 @@ nginx:
         to: /usr/share/nginx/html/phpmyadmin
   links:
     - php:php-fpm
+
+
+composer:
+  image: composer/composer:master
+  container_name: composer
+  working_dir: /usr/share/nginx/html/tcomposer
+  volumes_from:
+   - data
